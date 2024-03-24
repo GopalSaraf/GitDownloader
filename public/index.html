@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git Downloader</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 10;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      .note {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .note-heading {
+        margin: 0;
+        padding-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .note-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+        margin: 0;
+      }
+
+      .note-link a {
+        margin: 0;
+        font-size: 16px;
+        word-break: break-all;
+        color: #333;
+      }
+
+      .copy {
+        width: 60px;
+        padding: 5px 10px;
+        margin: 0;
+        margin-bottom: 5px;
+        background-color: #999;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .copy:hover {
+        background-color: #666;
+      }
+
+      .download {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+      }
+
+      .download:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Git Downloader</h1>
+    <form action="/download" method="POST">
+      <label for="url">Enter the URL of the Git repository</label>
+      <input type="text" id="url" name="url" />
+      <div class="note">
+        <p class="note-heading">Examples:</p>
+        <div class="note-link">
+          <a href="https://github.com/GopalSaraf/learnML" target="_blank"
+            >https://github.com/GopalSaraf/learnML</a
+          >
+
+          <button
+            class="copy copy-1"
+            type="button"
+            onclick="copyText('https://github.com/GopalSaraf/learnML', 'copy-1')"
+          >
+            Copy
+          </button>
+        </div>
+        <div class="note-link">
+          <a
+            href="https://github.com/GopalSaraf/learnML/tree/main/learnML"
+            target="_blank"
+          >
+            https://github.com/GopalSaraf/learnML/tree/main/learnML
+          </a>
+
+          <button
+            class="copy copy-2"
+            type="button"
+            onclick="copyText('https://github.com/GopalSaraf/learnML/tree/main/learnML', 'copy-2')"
+          >
+            Copy
+          </button>
+        </div>
+      </div>
+      <button class="download" type="submit">Download</button>
+    </form>
+  </body>
+
+  <script>
+    function copyText(text, buttonClass) {
+      navigator.clipboard.writeText(text);
+
+      const copyButton = document.querySelector(`.${buttonClass}`);
+      copyButton.textContent = "Copied!";
+      setTimeout(() => {
+        copyButton.textContent = "Copy";
+      }, 1500);
+    }
+  </script>
+</html>
