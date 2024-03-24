@@ -2,9 +2,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import fetch from "node-fetch";
 import JSZip from "jszip";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
+const token = process.env.GITHUB_TOKEN;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -12,6 +15,14 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
+
+const fetchContent = async (url) => {
+  const response = await fetch(url, {
+    headers: token ? { Authorization: `token ${token}` } : {},
+  });
+
+  return response;
+};
 
 app.post("/download", async (req, res) => {
   const { url } = req.body;
@@ -28,7 +39,7 @@ app.post("/download", async (req, res) => {
   const apiURL = `https://api.github.com/repos/${username}/${repoName}/contents/${path}`;
 
   try {
-    const response = await fetch(apiURL);
+    const response = await fetchContent(apiURL);
 
     if (!response.ok) {
       throw new Error(
@@ -42,7 +53,7 @@ app.post("/download", async (req, res) => {
         const downloadURL = file.download_url;
         const filePath = file.path;
 
-        const fileContent = await fetch(downloadURL).then((res) =>
+        const fileContent = await fetchContent(downloadURL).then((res) =>
           res.buffer()
         );
         zip.file(filePath.replace(path, ""), fileContent);
@@ -65,7 +76,7 @@ app.post("/download", async (req, res) => {
 
       const fetchFiles = async (folder) => {
         const folderURL = folder.url;
-        const response = await fetch(folderURL);
+        const response = await fetchContent(folderURL);
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -101,7 +112,9 @@ app.post("/download", async (req, res) => {
       const fileName = data.name;
       const fileMimeType = data.name.split(".").pop();
 
-      const fileContent = await fetch(downloadURL).then((res) => res.buffer());
+      const fileContent = await fetchContent(downloadURL).then((res) =>
+        res.buffer()
+      );
       res.set("Content-Type", `application/${fileMimeType}`);
       res.set("Content-Disposition", `attachment; filename="${fileName}"`);
       res.send(fileContent);
